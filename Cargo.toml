@@ -2,5 +2,12 @@
 name = "advent-2024"
 version = "0.1.0"
 edition = "2021"
+build = "./src/build.rs"
 
-[dependencies]
+[profile.release]
+opt-level = 3
+debug = false
+overflow-checks = false
+
+[build-dependencies]
+reqwest = { version = "0.12.9", features = ["blocking"] }
