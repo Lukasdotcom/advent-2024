@@ -1,7 +1,7 @@
 use reqwest;
 use std::fs;
 use std::thread;
-pub const DAYS: usize = 1;
+pub const DAYS: usize = 2;
 fn main() {
     let cookie = std::env::var("AOC_COOKIE");
     let mut handles = vec![];

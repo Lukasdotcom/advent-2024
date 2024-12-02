@@ -2,9 +2,10 @@ use std::time::{Duration, Instant};
 // The day to show (0 means all of them)
 const DAY: u32 = 0;
 mod day01;
+mod day02;
 
 fn main() {
-    let tasks: [fn(); 1] = [day01::main];
+    let tasks: [fn(); 2] = [day01::main, day02::main];
     let now = Instant::now();
     if DAY == 0 {
         for task in tasks {
