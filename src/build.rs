@@ -33,6 +33,7 @@ fn download_file(day: usize, file: &str, cookie: String) {
     }
 }
 fn main() {
+    println!("cargo:rerun-if-changed=./data/final");
     let cookie = get_cookie();
     let mut handles = vec![];
     fs::create_dir_all("./data/final").expect("Failed to create final directory");
@@ -41,12 +42,11 @@ fn main() {
         if !std::path::Path::new(&file).exists() {
             fs::write(&file, "").unwrap();
         }
-        if let Ok(metadata) = fs::metadata(&file) {
-            if metadata.len() == 0 {
-                let cookie = cookie.clone();
-                handles.push(thread::spawn(move || {
-                    download_file(day, &file, cookie.unwrap())
-                }));
+        if let Ok(cookie) = cookie.clone() {
+            if let Ok(metadata) = fs::metadata(&file) {
+                if metadata.len() == 0 {
+                    handles.push(thread::spawn(move || download_file(day, &file, cookie)));
+                }
             }
         }
     }
