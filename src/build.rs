@@ -24,6 +24,13 @@ fn download_file(day: usize, file: &str, cookie: String) {
     println!("Downloading data for day {}", day);
     match res {
         Ok(res) => {
+            if !res.status().is_success() {
+                panic!(
+                    "No data for day {} due to status code {}",
+                    day,
+                    res.status()
+                );
+            }
             let text = res.text().unwrap();
             fs::write(&file, text).unwrap();
         }
