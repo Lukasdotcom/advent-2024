@@ -3,9 +3,10 @@ use std::time::{Duration, Instant};
 const DAY: u32 = 0;
 mod day01;
 mod day02;
+mod day03;
 
 fn main() {
-    let tasks: [fn(); 2] = [day01::main, day02::main];
+    let tasks: [fn(); 3] = [day01::main, day02::main, day03::main];
     let now = Instant::now();
     if DAY == 0 {
         for task in tasks {

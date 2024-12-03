@@ -55,6 +55,6 @@ pub fn calc(data: &str) -> (u32, u32) {
 }
 pub fn main() {
     let (part1, part2) = calc(DATA);
-    println!("Answer for day 1 part 1 is {}.", part1);
-    println!("Answer for day 1 part 2 is {}.", part2);
+    println!("Answer for day 2 part 1 is {}.", part1);
+    println!("Answer for day 2 part 2 is {}.", part2);
 }
