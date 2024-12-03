@@ -1,39 +1,53 @@
 use reqwest;
 use std::fs;
 use std::thread;
-pub const DAYS: usize = 2;
+pub const DAYS: usize = 3;
+fn get_cookie() -> Result<String, String> {
+    let file = "./cookie";
+    if std::path::Path::new(file).exists() {
+        let contents = fs::read_to_string(file);
+        match contents {
+            Ok(contents) => Ok(contents.trim().to_string()),
+            Err(err) => Err(format!("Failed to read cookie file: {}", err)),
+        }
+    } else {
+        Err("Cookie file does not exist".into())
+    }
+}
+fn download_file(day: usize, file: &str, cookie: String) {
+    let url = format!("https://adventofcode.com/2024/day/{}/input", day);
+    let client = reqwest::blocking::Client::new();
+    let res = client
+        .get(url)
+        .header("cookie", format!("session={}", cookie))
+        .send();
+    println!("Downloading data for day {}", day);
+    match res {
+        Ok(res) => {
+            let text = res.text().unwrap();
+            fs::write(&file, text).unwrap();
+        }
+        Err(err) => {
+            panic!("Failed to download data: {}", err);
+        }
+    }
+}
 fn main() {
-    let cookie = std::env::var("AOC_COOKIE");
+    let cookie = get_cookie();
     let mut handles = vec![];
     fs::create_dir_all("./data/final").expect("Failed to create final directory");
     for day in 1..=DAYS {
-        let url = format!("https://adventofcode.com/2024/day/{}/input", day);
         let file = format!("./data/final/day{:02}.txt", day);
         if !std::path::Path::new(&file).exists() {
-            println!("Downloading data for day {}", day);
-            let cookie = cookie.clone();
-            let handle = thread::spawn(move || match cookie {
-                Ok(cookie) => {
-                    let client = reqwest::blocking::Client::new();
-                    let res = client
-                        .get(url)
-                        .header("cookie", format!("session={}", cookie))
-                        .send();
-                    match res {
-                        Ok(res) => {
-                            let text = res.text().unwrap();
-                            fs::write(&file, text).unwrap();
-                        }
-                        Err(err) => {
-                            panic!("Failed to download data: {}", err);
-                        }
-                    }
-                }
-                Err(_) => {
-                    fs::write(&file, "").unwrap();
-                }
-            });
-            handles.push(handle);
+            fs::write(&file, "").unwrap();
+        }
+        if let Ok(metadata) = fs::metadata(&file) {
+            if metadata.len() == 0 {
+                let cookie = cookie.clone();
+                handles.push(thread::spawn(move || {
+                    download_file(day, &file, cookie.unwrap())
+                }));
+            }
         }
     }
     for handle in handles {
