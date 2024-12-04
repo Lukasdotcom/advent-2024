@@ -4,9 +4,10 @@ const DAY: u32 = 0;
 mod day01;
 mod day02;
 mod day03;
+mod day04;
 
 fn main() {
-    let tasks: [fn(); 3] = [day01::main, day02::main, day03::main];
+    let tasks: [fn(); 4] = [day01::main, day02::main, day03::main, day04::main];
     let now = Instant::now();
     if DAY == 0 {
         for task in tasks {
