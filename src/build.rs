@@ -1,7 +1,7 @@
 use reqwest;
 use std::fs;
 use std::thread;
-pub const DAYS: usize = 4;
+pub const DAYS: usize = 5;
 fn get_cookie() -> Result<String, String> {
     let file = "./cookie";
     if std::path::Path::new(file).exists() {
